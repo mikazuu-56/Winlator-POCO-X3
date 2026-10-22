@@ -12,6 +12,11 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - name: Checkout Diagnostic Repository
+        uses: actions/checkout@v4
+        with:
+          path: diagnostics
+
       - name: Checkout Winlator Source
         uses: actions/checkout@v4
         with:
@@ -91,17 +96,10 @@ jobs:
           grep -R -n 'app_name' \
             winlator/app/src/main/res/values/strings.xml | head -10
 
-      - name: Build Debug APK
+      - name: Inspect Package Dependencies
         run: |
-          cd winlator
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          echo "===== PACKAGE REFERENCES ====="
+          grep -R -n -E             'com\\.winlator|FileProvider|APPLICATION_ID'             winlator/app/src/main/java             winlator/app/src/main/cpp             winlator/app/src/main/AndroidManifest.xml             | grep -v '^.*import com.winlator'             | head -100 || true
 
-      - name: Upload APK
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Winlator-POCO-X3-v0.1
-          path: winlator/app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-          retention-days: 7
+          echo "===== GRADLE APPLICATION ID ====="
+          grep -n 'applicationId' winlator/app/build.gradle
