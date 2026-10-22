@@ -103,3 +103,24 @@ jobs:
 
           echo "===== GRADLE APPLICATION ID ====="
           grep -n 'applicationId' winlator/app/build.gradle
+
+      - name: Apply Diagnostic Patches
+        run: |
+          python diagnostics/patches/diagnostic_identity.py
+          python diagnostics/patches/diagnostic_process.py
+          python diagnostics/patches/diagnostic_ui.py
+
+      - name: Build Debug APK
+        run: |
+          cd winlator
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload Diagnostic APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Winlator-11.2-Diagnostic-ARM64
+          path: winlator/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
