@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: brunodev85/winlator-app
-          ref: main
+          ref: 8077f374ef2d54127b088de9e8cd7b4af14d9c8b
           path: winlator
 
       - name: Setup Java
