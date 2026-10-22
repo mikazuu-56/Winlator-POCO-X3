@@ -71,6 +71,23 @@ jobs:
           grep -R -n 'applicationId' \
             winlator/app/build.gradle* || true
 
+      - name: Inspect L4D Integration
+        run: |
+          echo "===== MAIN ACTIVITY ====="
+          sed -n '1,220p' winlator/app/src/main/java/com/winlator/MainActivity.java
+
+          echo "===== MAIN LAYOUT ====="
+          sed -n '1,180p' winlator/app/src/main/res/layout/main_activity.xml
+
+          echo "===== CONTAINER LAUNCH ====="
+          grep -R -n -E 'startActivity|ContainerDetailFragment|XServerDisplayActivity' \
+            winlator/app/src/main/java/com/winlator/MainActivity.java \
+            winlator/app/src/main/java/com/winlator/ui/ 2>/dev/null | head -70
+
+          echo "===== APP NAME ====="
+          grep -R -n 'app_name' \
+            winlator/app/src/main/res/values/strings.xml | head -10
+
       - name: Build Debug APK
         run: |
           cd winlator
