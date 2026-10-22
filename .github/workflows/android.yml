@@ -108,6 +108,7 @@ jobs:
         run: |
           python diagnostics/patches/diagnostic_identity.py
           python diagnostics/patches/diagnostic_process.py
+          python diagnostics/patches/diagnostic_exception.py
           python diagnostics/patches/diagnostic_ui.py
 
       - name: Build Debug APK
