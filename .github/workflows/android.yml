@@ -56,6 +56,21 @@ jobs:
           echo "===== AVAILABLE ASSETS ====="
           du -sh app/src/main/assets 2>/dev/null || true
 
+      - name: Inspect Launcher Source
+        run: |
+          echo "===== MAIN ACTIVITIES ====="
+          find winlator/app/src/main -type f \
+            \( -name '*Activity.java' -o -name '*Activity.kt' \) \
+            | head -60
+
+          echo "===== LAYOUT FILES ====="
+          find winlator/app/src/main/res/layout -maxdepth 1 \
+            -type f | head -60
+
+          echo "===== APPLICATION ID ====="
+          grep -R -n 'applicationId' \
+            winlator/app/build.gradle* || true
+
       - name: Build Debug APK
         run: |
           cd winlator
