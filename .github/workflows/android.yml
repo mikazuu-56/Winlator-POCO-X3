@@ -1,0 +1,29 @@
+name: Winlator POCO X3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Winlator Source
+        uses: actions/checkout@v4
+        with:
+          repository: brunodev85/winlator-app
+          path: winlator
+
+      - name: Inspect Source
+        run: |
+          echo "===== SOURCE FILES ====="
+          ls -lah winlator
+
+          echo "===== BUILD SYSTEM ====="
+          find winlator -maxdepth 3 \
+            \( -name "gradlew" -o \
+               -name "build.gradle" -o \
+               -name "settings.gradle" \) -print
+
+          echo "===== SOURCE COMMIT ====="
+          git -C winlator rev-parse HEAD
