@@ -12,18 +12,34 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: brunodev85/winlator-app
+          ref: main
           path: winlator
 
-      - name: Inspect Source
+      - name: Inspect Build Requirements
+        shell: bash
         run: |
-          echo "===== SOURCE FILES ====="
-          ls -lah winlator
+          cd winlator
 
-          echo "===== BUILD SYSTEM ====="
-          find winlator -maxdepth 3 \
-            \( -name "gradlew" -o \
-               -name "build.gradle" -o \
-               -name "settings.gradle" \) -print
+          echo "===== SOURCE VERSION ====="
+          git rev-parse HEAD
 
-          echo "===== SOURCE COMMIT ====="
-          git -C winlator rev-parse HEAD
+          echo "===== ROOT BUILD ====="
+          cat build.gradle
+
+          echo "===== APP BUILD ====="
+          cat app/build.gradle
+
+          echo "===== GRADLE WRAPPER ====="
+          cat gradle/wrapper/gradle-wrapper.properties
+
+          echo "===== ASSETS ====="
+          du -sh app/src/main/assets 2>/dev/null || true
+
+          echo "===== BUILD CONFIGURATION ====="
+          grep -R -nE \
+            'applicationId|compileSdk|minSdk|ndkVersion|externalNativeBuild' \
+            app/build.gradle || true
+
+          echo "===== AVAILABLE TASKS ====="
+          chmod +x gradlew
+          ./gradlew tasks --all --no-daemon
